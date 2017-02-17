@@ -1,0 +1,25 @@
+#!/bin/bash
+
+
+sudo su - vagrant  << EOF
+
+set -e
+
+  
+  echo "Install GoVendor"
+  go get -u github.com/kardianos/govendor
+  echo "GoGet Delta-agent"
+  go get github.com/adamar/delta-agent
+  echo "Install Dependencies for Delta-agent"
+  cd /home/vagrant/src/github.com/adamar/delta-agent && /home/vagrant/bin/govendor sync
+  
+  
+  echo "set -e" > /home/vagrant/src/github.com/adamar/delta-agent/start-agent
+  echo "go build delta-agent.go" >> /home/vagrant/src/github.com/adamar/delta-agent/start-agent
+  echo 'sudo SERVER="192.168.56.101:12345" ./delta-agent' >> /home/vagrant/src/github.com/adamar/delta-agent/start-agent
+  chmod +x /home/vagrant/src/github.com/adamar/delta-agent/start-agent
+
+  echo "cd /home/vagrant/src/github.com/adamar/delta-agent" >> /home/vagrant/.bash_profile
+
+EOF
+

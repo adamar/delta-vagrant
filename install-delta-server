@@ -1,0 +1,22 @@
+#!/bin/bash
+
+sudo su - vagrant  << EOF
+
+set -e
+
+  go get -u github.com/kardianos/govendor
+  go get -u github.com/adamar/delta-server
+  cd /home/vagrant/src/github.com/adamar/delta-server && /home/vagrant/bin/govendor sync
+
+  echo "go run /home/vagrant/src/github.com/adamar/delta-server/delta-server.go" > /home/vagrant/start-server
+  chmod +x /home/vagrant/start-server
+
+  echo "go build delta-server.go" > /home/vagrant/src/github.com/adamar/delta-server/start-server
+  echo 'sudo SERVER="192.168.56.101:12345" ./delta-server' >> /home/vagrant/src/github.com/adamar/delta-server/start-server
+  chmod +x /home/vagrant/src/github.com/adamar/delta-server/start-server
+
+  echo "cd /home/vagrant/src/github.com/adamar/delta-server" >> /home/vagrant/.bash_profile
+
+
+EOF
+
