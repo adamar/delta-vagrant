@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+sudo su -  << EOF
+
+set -e
+
+  ## Install Dependencies
+  yum install -y golang vim git systemd-devel net-tools lsof
+  sudo service auditd stop
+  systemctl disable auditd
+  echo 'export GOPATH=/home/vagrant/' >> /home/vagrant/.bash_profile 
+
+EOF

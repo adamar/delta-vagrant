@@ -1,0 +1,29 @@
+#!/bin/bash
+
+
+sudo su -  << EOF
+
+set -e
+
+  ## Disable IPv6
+  echo "net.ipv6.conf.all.disable_ipv6 = 1" > /etc/sysctl.conf
+  echo "net.ipv6.conf.default.disable_ipv6 = 1" > /etc/sysctl.conf
+  sysctl -p
+
+  ## Install Postgres 9.6
+  rpm -Uvh https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-centos96-9.6-3.noarch.rpm
+  yum install -y golang vim git postgresql96 postgresql96-server net-tools lsof
+  /usr/pgsql-9.6/bin/postgresql96-setup initdb
+  systemctl restart postgresql-9.6.service
+
+  ## Setup Postgres Auth
+  sudo -u postgres psql postgres -c "ALTER USER postgres WITH ENCRYPTED PASSWORD 'securepass'"
+  sed -i 's/local.*all.*postgres.*peer/local all postgres md5/' /var/lib/pgsql/9.6/data/pg_hba.conf
+  sed -i 's/local.*all.*all.*peer/local all all md5/' /var/lib/pgsql/9.6/data/pg_hba.conf
+  sed -i 's/host.*all.*all.*127\.0\.0\.1\/32.*ident/host all all 127.0.0.1\/32 md5/' /var/lib/pgsql/9.6/data/pg_hba.conf
+  systemctl restart postgresql-9.6.service
+
+  echo 'export GOPATH=/home/vagrant/' >> /home/vagrant/.bash_profile
+  echo "GOPATH=/home/vagrant/" >> /etc/environment
+
+EOF
