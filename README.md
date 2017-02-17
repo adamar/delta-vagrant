@@ -1,6 +1,8 @@
 
 
-# &#120607; Delta IDS development environment
+# &#120607; Delta IDS
 
+
+## Vagrant development environment
 
 
